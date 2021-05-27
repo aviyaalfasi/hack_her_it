@@ -2,7 +2,7 @@ import cv2
 import time
 
 
-def get_face_size(picture):
+def get_face_sizes(picture):
     """
     :param picture: a picture
     :return: the size of the person in the picture 'picture'
@@ -16,11 +16,17 @@ def get_face_size(picture):
         minSize=(30, 30)
     )
     max_face_size = 0
+    max_sizes = {'max_face_size': max_face_size, 'x': 0, 'y': 0, 'w': 0, 'h': 0}
     for (x, y, w, h) in faces:
-        face_size = w * h
-        if face_size > max_face_size:
-            max_face_size = face_size
-    return max_face_size
+        face_size = h
+        if face_size > max_sizes['max_face_size']:
+            max_sizes['max_face_size'] = face_size
+            max_sizes['x'] = x
+            max_sizes['y'] = y
+            max_sizes['w'] = w
+            max_sizes['h'] = h
+
+    return max_sizes
 
 
 def take_picture():
@@ -40,30 +46,43 @@ def take_picture():
     return frame
 
 
-count_difference = 0
-threshold = 100
-picture_number = 0
+def run():
+    count_difference = 0
+    TRESHHOLD = 10
+    MAX_DIFFERENCES_AMOUNT = 2
+    SECONDS_TO_SLEEP = 2
 
-initial_picture = take_picture()
-initial_picture_face_size = get_face_size(initial_picture)
-cv2.imwrite('height_test\initial_picture.jpg', initial_picture)
+    picture_number = 0
+    is_last_picture_difference = False
+    is_current_picture_difference = False
 
-while True:
-    picture_number += 1
-    current_picture = take_picture()
-    current_picture_face_size = get_face_size(current_picture)
-    cv2.imwrite('height_test\\' + str(picture_number) + '.jpg', current_picture)
-    if abs(current_picture_face_size - initial_picture_face_size) > threshold:
-        count_difference += 1
-    if count_difference >= 2:
-        print('Problem')
-        count_difference = 0
-    time.sleep(5)
+    initial_picture = take_picture()
+    initial_picture_face_size = get_face_sizes(initial_picture)
+    cv2.rectangle(initial_picture, (initial_picture_face_size['x'], initial_picture_face_size['y']), (
+    initial_picture_face_size['x'] + initial_picture_face_size['w'],
+    initial_picture_face_size['y'] + initial_picture_face_size['h']), (0, 255, 0), 2)
+    cv2.imwrite('height_test\initial_picture.jpg', initial_picture)
+
+    while True:
+        picture_number += 1
+        current_picture = take_picture()
+        current_picture_face_size = get_face_sizes(current_picture)
+        cv2.rectangle(current_picture, (current_picture_face_size['x'], current_picture_face_size['y']), (current_picture_face_size['x'] + current_picture_face_size['w'], current_picture_face_size['y'] + current_picture_face_size['h']), (0, 255, 0), 2)
+        cv2.imwrite('height_test\\' + str(picture_number) + '.jpg', current_picture)
+
+        if abs(current_picture_face_size['max_face_size'] - initial_picture_face_size['max_face_size']) > TRESHHOLD:
+            count_difference += 1
+        else:
+            count_difference = 0
+
+        if count_difference >= MAX_DIFFERENCES_AMOUNT:
+            print('Problem')
+            count_difference = 0
+        # take a picture every 5 seconds
+        time.sleep(SECONDS_TO_SLEEP)
 
 
-
-
-
+run()
 
 
 
