@@ -1,5 +1,21 @@
 import cv2
 import time
+from plyer import notification # for getting notification on your PC
+
+
+def popup_message(accept_title, accept_message):
+    notification.notify(
+            # title of the notification,
+            title=accept_title,
+            # the body of the notification
+            message=accept_message,
+            # creating icon for the notification
+            # we need to download a icon of ico file format
+            app_icon=None,
+
+            # the notification stays for 50sec
+            timeout=50
+        )
 
 
 def get_face_sizes(picture):
@@ -53,10 +69,9 @@ def run():
     SECONDS_TO_SLEEP = 2
 
     picture_number = 0
-    is_last_picture_difference = False
-    is_current_picture_difference = False
 
     initial_picture = take_picture()
+    # cv2.imshow("preview", initial_picture)
     initial_picture_face_size = get_face_sizes(initial_picture)
     cv2.rectangle(initial_picture, (initial_picture_face_size['x'], initial_picture_face_size['y']), (
     initial_picture_face_size['x'] + initial_picture_face_size['w'],
