@@ -29,7 +29,7 @@ def show_video():
 				cap.release()
 				cv2.destroyAllWindows()
 				break
-			elif k in [ord('c'), 32]:  # capture Image
+			elif k in [32, 13]:  # capture Image, captures image when the user clicks on whitespace (32) or enter (13)
 				cap.release()
 				cv2.destroyAllWindows()
 				return frame
