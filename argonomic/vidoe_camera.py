@@ -13,7 +13,6 @@ def start_process():
 
 def show_video():
 	cap = start_process()
-	global recordControl
 	while True:
 		# now = datetime.now()
 		# time = datetime.time(now)

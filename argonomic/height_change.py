@@ -69,7 +69,7 @@ def take_picture(cap, click_required=False):
     return frame
 
 
-def restart_app(threshold=30, seconds_to_sleep=3, max_differences=2):
+def restart_app(threshold=30, seconds_to_sleep=2, max_differences=2):
     count_difference = 0
     picture_number = 0
 
@@ -96,8 +96,8 @@ def restart_app(threshold=30, seconds_to_sleep=3, max_differences=2):
         picture_number += 1
         current_picture = take_picture(cap)
         current_picture_face_size = get_face_sizes(current_picture)
-        cv2.rectangle(current_picture, (current_picture_face_size['x'], current_picture_face_size['y']), (current_picture_face_size['x'] + current_picture_face_size['width'], current_picture_face_size['y'] + current_picture_face_size['height']), (0, 255, 0), 2)
-        cv2.imwrite('height_test\\' + str(picture_number) + '.jpg', current_picture)
+        # cv2.rectangle(current_picture, (current_picture_face_size['x'], current_picture_face_size['y']), (current_picture_face_size['x'] + current_picture_face_size['width'], current_picture_face_size['y'] + current_picture_face_size['height']), (0, 255, 0), 2)
+        # cv2.imwrite('height_test\\' + str(picture_number) + '.jpg', current_picture)
 
         if current_picture_face_size['height'] - initial_picture_face_size['height'] > threshold:
             count_difference += 1
